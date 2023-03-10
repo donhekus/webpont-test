@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\Weather\Providers\WeatherServiceProvider;
 use Illuminate\Support\Facades\Facade;
 
 return [
@@ -41,7 +42,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -167,6 +168,7 @@ return [
         /*
          * Package Service Providers...
          */
+        WeatherServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -191,7 +193,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // ...
-    ])->toArray(),
+                                                     // ...
+                                                 ])->toArray(),
 
 ];
