@@ -1,0 +1,66 @@
+version: '3'
+services:
+
+  #PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: webpont-backend
+    container_name: webpont_backend_app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/var/www
+      - ~/.ssh:/home/www/.ssh
+    networks:
+      - webpont-backend-network
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: webpont_backend_webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - webpont-backend-network
+
+  #MySQL Service
+  db:
+    image: postgres:latest
+    container_name: webpont_backend_db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: webpont
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: webpont
+    volumes:
+      - ./:/var/www
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - webpont-backend-network
+
+#Docker Networks
+networks:
+  webpont-backend-network:
+    driver: bridge
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local
